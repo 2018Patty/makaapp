@@ -289,6 +289,7 @@ export default function StudentPage() {
   const [selectedSession,setSelected]  = useState<ActiveSession | null>(null)
   const [scanResult,     setScanResult]= useState<ScanResult | null>(null)
   const [pinInput,       setPinInput]  = useState('')
+  const pinInputRef = useRef<HTMLInputElement>(null)
   const [statusMsg,      setStatus]    = useState('')
   const [busy,           setBusy]      = useState(true)
   const [showJoin,       setShowJoin]       = useState(false)
@@ -759,50 +760,45 @@ export default function StudentPage() {
             {/* PIN input */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
               <p style={{ margin: 0, fontSize: 13, color: 'var(--soft)', textAlign: 'center' }}>
-                พิมพ์รหัส 4 หลัก
+                แตะที่ช่องด้านล่าง แล้วพิมพ์รหัส 4 หลัก
               </p>
-              <div style={{ display: 'flex', gap: 12 }}>
+              {/* Boxes + transparent overlay input */}
+              <div
+                style={{ position: 'relative', display: 'inline-flex', gap: 12, cursor: 'text' }}
+                onClick={() => pinInputRef.current?.focus()}
+              >
                 {[0, 1, 2, 3].map(i => (
                   <div
                     key={i}
                     style={{
-                      width: 56, height: 64, borderRadius: 14,
+                      width: 60, height: 68, borderRadius: 14,
                       border: `2.5px solid ${pinInput.length === i ? 'var(--accent)' : pinInput.length > i ? 'var(--good)' : 'var(--line)'}`,
                       display: 'grid', placeItems: 'center',
                       background: pinInput.length > i ? 'color-mix(in srgb, var(--good) 8%, #fff)' : '#fff',
-                      fontFamily: 'monospace', fontSize: 28, fontWeight: 800,
+                      fontFamily: 'monospace', fontSize: 30, fontWeight: 800,
                       color: 'var(--ink)', transition: 'all 0.12s',
                     }}
                   >
                     {pinInput[i] ?? ''}
                   </div>
                 ))}
+                {/* Transparent overlay — captures tap and keyboard on mobile */}
+                <input
+                  ref={pinInputRef}
+                  type="tel"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={4}
+                  value={pinInput}
+                  autoFocus
+                  onChange={e => { setStatus(''); setPinInput(e.target.value.replace(/\D/g, '').slice(0, 4)) }}
+                  style={{
+                    position: 'absolute', inset: 0,
+                    opacity: 0, width: '100%', height: '100%',
+                    cursor: 'text', fontSize: 16,
+                  }}
+                />
               </div>
-              {/* Hidden real input behind the boxes */}
-              <input
-                type="tel"
-                inputMode="numeric"
-                pattern="[0-9]*"
-                maxLength={4}
-                value={pinInput}
-                autoFocus
-                onChange={e => { setStatus(''); setPinInput(e.target.value.replace(/\D/g, '').slice(0, 4)) }}
-                style={{
-                  position: 'absolute', opacity: 0, width: 1, height: 1, pointerEvents: 'none',
-                }}
-              />
-              <button
-                style={{
-                  background: 'none', border: '1px solid var(--line)', borderRadius: 10,
-                  padding: '8px 20px', cursor: 'pointer', fontSize: 13, color: 'var(--soft)',
-                }}
-                onClick={() => {
-                  const inp = document.querySelector('input[type="tel"]') as HTMLInputElement | null
-                  inp?.focus()
-                }}
-              >
-                แตะเพื่อพิมพ์รหัส
-              </button>
             </div>
 
             <button
