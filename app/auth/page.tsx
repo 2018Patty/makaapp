@@ -115,19 +115,30 @@ export default function AuthPage() {
             <h2>เข้าสู่ระบบ{roleHint === 'teacher' ? 'อาจารย์' : 'นักศึกษา'}</h2>
           </div>
 
-          <div className="m-card" style={{ marginBottom: 20, padding: '16px 20px 0', overflow: 'hidden' }}>
-            <div className="m-brand-row" style={{ marginBottom: 12 }}>
-              <div className="brand-mark" style={{ width: 36, height: 36, borderRadius: 12, fontSize: 16 }}>M</div>
-              <span style={{ fontFamily: '"Mitr",sans-serif', fontSize: 22, color: 'var(--ink)' }}>Maka</span>
+          <div style={{ textAlign: 'center', marginBottom: 24 }}>
+            <div style={{
+              width: 280, height: 280, borderRadius: '50%',
+              overflow: 'hidden', margin: '0 auto 16px',
+            }}>
+              <Image
+                src={roleHint === 'teacher' ? '/TeacherLogin.png' : '/StudentLogin.png'}
+                alt="Maka Login"
+                width={280}
+                height={280}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                priority
+              />
             </div>
-            <Image
-              src={roleHint === 'teacher' ? '/TeacherLogin.png' : '/StudentLogin.png'}
-              alt="Maka Login"
-              width={600}
-              height={400}
-              style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 12 }}
-              priority
-            />
+            <div className="m-brand-row" style={{ marginBottom: 4, justifyContent: 'center' }}>
+              <div className="brand-mark" style={{ width: 28, height: 28, borderRadius: 9, fontSize: 13 }}>M</div>
+              <span style={{ fontFamily: '"Mitr",sans-serif', fontSize: 19, color: 'var(--ink)' }}>Maka</span>
+            </div>
+            <p style={{ margin: '0 0 2px', fontFamily: '"Mitr",sans-serif', fontSize: 18, fontWeight: 700, color: 'var(--ink)' }}>
+              "มาค่ะ"
+            </p>
+            <p style={{ margin: 0, fontSize: 12, color: 'var(--soft)' }}>
+              App เช็คชื่อเข้าเรียนด้วยใบหน้า
+            </p>
           </div>
 
           <form onSubmit={handleSignIn} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
