@@ -266,17 +266,30 @@ export default function AboutPage() {
           <p style={{ margin: '0 0 16px', fontSize: 11, color: 'var(--soft)', opacity: 0.6 }}>
             Built with Next.js · Supabase · face-api.js
           </p>
-          <Link
-            href="/auth"
-            style={{
-              display: 'inline-block',
-              padding: '10px 28px', borderRadius: 14,
-              background: 'var(--accent)', color: '#fff',
-              textDecoration: 'none', fontSize: 14, fontWeight: 600,
-            }}
-          >
-            กลับหน้าหลัก
-          </Link>
+          <div style={{ display: 'flex', gap: 10, justifyContent: 'center', flexWrap: 'wrap' }}>
+            <Link
+              href="/guide"
+              style={{
+                display: 'inline-block',
+                padding: '10px 28px', borderRadius: 14,
+                border: '1.5px solid var(--accent)', color: 'var(--accent)',
+                textDecoration: 'none', fontSize: 14, fontWeight: 600,
+              }}
+            >
+              📖 คู่มือการใช้งาน
+            </Link>
+            <Link
+              href="/auth"
+              style={{
+                display: 'inline-block',
+                padding: '10px 28px', borderRadius: 14,
+                background: 'var(--accent)', color: '#fff',
+                textDecoration: 'none', fontSize: 14, fontWeight: 600,
+              }}
+            >
+              กลับหน้าหลัก
+            </Link>
+          </div>
         </div>
 
       </div>

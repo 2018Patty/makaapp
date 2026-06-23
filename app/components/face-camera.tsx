@@ -58,6 +58,7 @@ export function FaceCamera({ mode, onCaptured, onCancel }: Props) {
   const blinkCountRef   = useRef(0)
   const prevEarRef      = useRef(0.35)
   const captureFramesRef = useRef<Float32Array[]>([])
+  const noFaceCountRef  = useRef(0)  // grace period — frames without face before reset
 
   const [phase, setPhaseState] = useState<Phase>('idle')
   const [progress, setProgress] = useState(0)
@@ -102,6 +103,7 @@ export function FaceCamera({ mode, onCaptured, onCancel }: Props) {
       ctx?.clearRect(0, 0, canvas.width, canvas.height)
 
       if (result) {
+        noFaceCountRef.current = 0
         const r = faceapi.resizeResults(result, dims)
         faceapi.draw.drawDetections(canvas, [r])
         faceapi.draw.drawFaceLandmarks(canvas, [r])
@@ -144,10 +146,14 @@ export function FaceCamera({ mode, onCaptured, onCancel }: Props) {
           }
         }
       } else {
-        // Lost face — back to detecting
+        // Lost face — wait 8 frames before resetting (handles brief dropout during blink)
         if (curPhase === 'liveness' || curPhase === 'capturing') {
-          setPhase('detecting')
-          setProgress(0)
+          noFaceCountRef.current += 1
+          if (noFaceCountRef.current > 8) {
+            setPhase('detecting')
+            setProgress(0)
+            noFaceCountRef.current = 0
+          }
         }
       }
 
