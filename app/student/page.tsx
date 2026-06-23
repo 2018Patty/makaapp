@@ -578,7 +578,12 @@ export default function StudentPage() {
 
     // Verify PIN
     setStatus('กำลังตรวจสอบรหัส...')
-    if (!selectedSession.session_pin || selectedSession.session_pin !== pinInput) {
+    if (!selectedSession.session_pin) {
+      setStatus('คาบนี้ยังไม่มีรหัส กรุณาปิดและเปิดคาบใหม่ หรือติดต่ออาจารย์')
+      setBusy(false)
+      return
+    }
+    if (selectedSession.session_pin !== pinInput) {
       setStatus('รหัสไม่ถูกต้อง กรุณาตรวจสอบรหัสจากจอในห้องเรียนอีกครั้ง')
       setBusy(false)
       return
