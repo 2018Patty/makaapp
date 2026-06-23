@@ -115,11 +115,19 @@ export default function AuthPage() {
             <h2>เข้าสู่ระบบ{roleHint === 'teacher' ? 'อาจารย์' : 'นักศึกษา'}</h2>
           </div>
 
-          <div className="m-card" style={{ marginBottom: 20 }}>
-            <div className="m-brand-row" style={{ marginBottom: 0 }}>
+          <div className="m-card" style={{ marginBottom: 20, padding: '16px 20px 0', overflow: 'hidden' }}>
+            <div className="m-brand-row" style={{ marginBottom: 12 }}>
               <div className="brand-mark" style={{ width: 36, height: 36, borderRadius: 12, fontSize: 16 }}>M</div>
               <span style={{ fontFamily: '"Mitr",sans-serif', fontSize: 22, color: 'var(--ink)' }}>Maka</span>
             </div>
+            <Image
+              src="/StudentLogin.png"
+              alt="Maka Login"
+              width={600}
+              height={400}
+              style={{ width: '100%', height: 'auto', display: 'block', borderRadius: 12 }}
+              priority
+            />
           </div>
 
           <form onSubmit={handleSignIn} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
