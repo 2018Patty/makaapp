@@ -964,6 +964,24 @@ export default function TeacherPage() {
     setTimeout(() => setStatus(''), 2500)
   }
 
+  const resetCourse = async (courseId: string, courseName: string) => {
+    if (!supabase) return
+    if (!window.confirm(`ล้างข้อมูลการเข้าเรียน "${courseName}" ?\n\nคาบเรียนและข้อมูลการเช็คชื่อทั้งหมดจะถูกลบถาวร\nรายวิชาและรายชื่อนักศึกษายังคงอยู่`)) return
+    const { data: sessionData } = await supabase.from('sessions').select('id').eq('course_id', courseId)
+    if (sessionData && sessionData.length > 0) {
+      const ids = sessionData.map((s: { id: string }) => s.id)
+      await supabase.from('attendance').delete().in('session_id', ids)
+    }
+    await supabase.from('sessions').delete().eq('course_id', courseId)
+    setSessions(prev => { const n = { ...prev }; delete n[courseId]; return n })
+    setAttendance(prev => { const n = { ...prev }; n[courseId] = []; return n })
+    setAllSessions(prev => { const n = { ...prev }; n[courseId] = []; return n })
+    setReportSession(prev => { const n = { ...prev }; delete n[courseId]; return n })
+    setReportSelectedSession(null)
+    setStatus('ล้างข้อมูลการเข้าเรียนแล้ว')
+    setTimeout(() => setStatus(''), 2500)
+  }
+
   // ── Loading ──
   if (busy && !profile) {
     return (
@@ -1283,6 +1301,20 @@ export default function TeacherPage() {
                             </svg>
                           </button>
                           <button
+                            title="ล้างข้อมูลการเข้าเรียน"
+                            onClick={e => { e.stopPropagation(); void resetCourse(course.id, course.name) }}
+                            style={{
+                              width: 30, height: 30, borderRadius: 8, border: '1px solid #fde8c0',
+                              background: '#fffbf0', cursor: 'pointer', display: 'grid', placeItems: 'center',
+                              color: '#d97706',
+                            }}
+                          >
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24">
+                              <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                              <path d="M3 3v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
+                          </button>
+                          <button
                             title="ลบรายวิชา"
                             onClick={e => { e.stopPropagation(); void deleteCourse(course.id, course.name) }}
                             style={{
@@ -1598,7 +1630,26 @@ export default function TeacherPage() {
                           ].filter(Boolean).join(' · ')}
                         </p>
                       </div>
+                      <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
                       {courseSessions.length > 0 && (
+                        <>
+                        <button
+                          onClick={() => void resetCourse(activeCourse.id, activeCourse.name)}
+                          title="ล้างข้อมูลการเข้าเรียน"
+                          style={{
+                            display: 'flex', alignItems: 'center', gap: 5,
+                            padding: '5px 10px', borderRadius: 8,
+                            background: '#fffbf0', color: '#d97706',
+                            border: '1px solid #fde8c0', cursor: 'pointer', flexShrink: 0,
+                            fontSize: 12, fontFamily: '"Mitr",sans-serif',
+                          }}
+                        >
+                          <svg width="12" height="12" fill="none" viewBox="0 0 24 24">
+                            <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M3 3v5h5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                          </svg>
+                          Reset
+                        </button>
                         <button
                           onClick={exportAllSessions}
                           title="Export ทุกคาบ"
@@ -1618,7 +1669,9 @@ export default function TeacherPage() {
                           </svg>
                           Excel ทุกคาบ
                         </button>
+                        </>
                       )}
+                      </div>
                     </div>
                   </div>
 
