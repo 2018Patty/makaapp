@@ -30,6 +30,7 @@ interface Session {
   id: string; status: 'open' | 'closed'
   starts_at: string; late_threshold_minutes: number; course_id: string
   latitude: number | null; longitude: number | null
+  session_pin: string | null
 }
 interface AttendanceRow {
   id: string; profile_id: string; session_id: string
@@ -148,6 +149,10 @@ function generateJoinCode(): string {
   // Avoids ambiguous chars (0/O, 1/I/L)
   const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
   return Array.from({ length: 6 }, () => chars[Math.floor(Math.random() * chars.length)]).join('')
+}
+
+function generateSessionPin(): string {
+  return String(Math.floor(1000 + Math.random() * 9000))
 }
 
 // ── Day constants ──────────────────────────────────────────────
@@ -929,10 +934,11 @@ export default function TeacherPage() {
     }
 
     setStatus('กำลังเปิดคาบ...')
+    const session_pin = generateSessionPin()
     const { data, error } = await supabase.from('sessions').insert({
       course_id: courseId, starts_at: startsAt.toISOString(),
       late_threshold_minutes: lateMinutes, status: 'open', created_by: user.id,
-      latitude, longitude,
+      latitude, longitude, session_pin,
     }).select().single<Session>()
     if (error || !data) { setStatus('เปิดคาบไม่สำเร็จ: ' + (error?.message ?? 'unknown')) }
     else { setSessions(prev => ({ ...prev, [courseId]: data })); setAttendance(prev => ({ ...prev, [courseId]: [] })); setStatus('') }
@@ -1374,11 +1380,36 @@ export default function TeacherPage() {
                       </button>
 
                       {sess && (
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
                           <div style={{ display: 'flex', gap: 12 }}>
                             <span style={{ fontSize: 12, color: 'var(--soft)' }}>เริ่ม {formatTime(sess.starts_at)} ({elapsed(sess.starts_at)})</span>
                             <span style={{ fontSize: 12, color: 'var(--good)', fontWeight: 600 }}>{attn.length} คนเช็คชื่อ</span>
                           </div>
+                          {sess.session_pin && (
+                            <div style={{
+                              display: 'flex', alignItems: 'center', gap: 10,
+                              background: 'color-mix(in srgb, var(--accent) 6%, #fff)',
+                              border: '1.5px solid color-mix(in srgb, var(--accent) 20%, transparent)',
+                              borderRadius: 12, padding: '10px 14px',
+                            }}>
+                              <div style={{ flex: 1 }}>
+                                <p style={{ margin: '0 0 2px', fontSize: 10, color: 'var(--soft)', fontWeight: 700, letterSpacing: 0.5 }}>
+                                  รหัสเช็คชื่อ (แสดงบนจอ)
+                                </p>
+                                <span style={{
+                                  fontFamily: 'monospace', fontSize: 28, fontWeight: 900,
+                                  letterSpacing: 10, color: 'var(--accent)',
+                                }}>
+                                  {sess.session_pin}
+                                </span>
+                              </div>
+                              <div style={{ textAlign: 'right', fontSize: 10, color: 'var(--soft)' }}>
+                                <div>สำหรับ</div>
+                                <div>นักศึกษา</div>
+                                <div>ไม่มีกล้อง</div>
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
 

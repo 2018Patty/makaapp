@@ -10,7 +10,7 @@ import { AvatarMenu } from '@/app/components/avatar-menu'
 // ── Types ──────────────────────────────────────────────────────
 
 type NavTab = 'home' | 'history' | 'profile'
-type View   = NavTab | 'setup-face' | 'setup-course' | 'checkin' | 'checkin-done'
+type View   = NavTab | 'setup-face' | 'setup-course' | 'checkin' | 'checkin-pin' | 'checkin-done'
 
 interface Profile {
   id: string
@@ -31,6 +31,7 @@ interface ActiveSession {
   late_threshold_minutes: number
   latitude: number | null
   longitude: number | null
+  session_pin: string | null
   courses: { code: string; name: string; room: string | null } | null
 }
 
@@ -287,6 +288,7 @@ export default function StudentPage() {
   const [attendance,     setAttendance]= useState<AttendanceRow[]>([])
   const [selectedSession,setSelected]  = useState<ActiveSession | null>(null)
   const [scanResult,     setScanResult]= useState<ScanResult | null>(null)
+  const [pinInput,       setPinInput]  = useState('')
   const [statusMsg,      setStatus]    = useState('')
   const [busy,           setBusy]      = useState(true)
   const [showJoin,       setShowJoin]       = useState(false)
@@ -336,7 +338,7 @@ export default function StudentPage() {
       const [openRes, allRes] = await Promise.all([
         supabase
           .from('sessions')
-          .select('id, course_id, starts_at, late_threshold_minutes, latitude, longitude, courses(code, name, room)')
+          .select('id, course_id, starts_at, late_threshold_minutes, latitude, longitude, session_pin, courses(code, name, room)')
           .eq('status', 'open')
           .in('course_id', courseIds),
         supabase
@@ -544,6 +546,79 @@ export default function StudentPage() {
     void loadData()
   }, [selectedSession, templates, loadData])
 
+  // ── Check-in: PIN ──
+  const handlePinCheckin = async () => {
+    if (!supabase || !selectedSession || pinInput.length !== 4) return
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) return
+    setBusy(true)
+
+    // GPS check (same as face scan)
+    if (selectedSession.latitude != null && selectedSession.longitude != null) {
+      setStatus('กำลังตรวจสอบตำแหน่ง...')
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 10000 })
+        )
+        const dist = haversineMeters(
+          pos.coords.latitude, pos.coords.longitude,
+          selectedSession.latitude, selectedSession.longitude,
+        )
+        if (dist > 10) {
+          setStatus(`ไม่สามารถเช็คชื่อได้ — คุณอยู่ห่างจากห้องเรียน ${Math.round(dist)} เมตร (ต้องอยู่ภายใน 10 เมตร)`)
+          setBusy(false)
+          return
+        }
+      } catch {
+        setStatus('ไม่สามารถระบุตำแหน่งได้ กรุณาเปิดการเข้าถึง GPS แล้วลองใหม่')
+        setBusy(false)
+        return
+      }
+    }
+
+    // Verify PIN
+    setStatus('กำลังตรวจสอบรหัส...')
+    if (!selectedSession.session_pin || selectedSession.session_pin !== pinInput) {
+      setStatus('รหัสไม่ถูกต้อง กรุณาตรวจสอบรหัสจากจอในห้องเรียนอีกครั้ง')
+      setBusy(false)
+      return
+    }
+
+    // Already checked in?
+    const { data: existing } = await supabase
+      .from('attendance').select('id, status')
+      .eq('session_id', selectedSession.id).eq('profile_id', user.id).maybeSingle()
+
+    if (existing) {
+      setScanResult({
+        attendanceStatus: existing.status as 'on-time' | 'late',
+        courseName: selectedSession.courses?.name ?? '',
+        checkedAt: new Date().toISOString(),
+      })
+      setStatus(''); setBusy(false); setView('checkin-done')
+      return
+    }
+
+    const attendanceStatus = isLate(selectedSession) ? 'late' : 'on-time'
+    const now = new Date().toISOString()
+    const { error } = await supabase.from('attendance').insert({
+      session_id: selectedSession.id,
+      profile_id: user.id,
+      status:     attendanceStatus,
+      checked_at: now,
+      method:     'pin',
+      similarity: null,
+      marked_by:  user.id,
+    })
+
+    if (error) { setStatus('บันทึกไม่สำเร็จ: ' + error.message); setBusy(false); return }
+
+    setScanResult({ attendanceStatus, courseName: selectedSession.courses?.name ?? '', checkedAt: now })
+    setStatus(''); setBusy(false); setPinInput('')
+    setView('checkin-done')
+    void loadData()
+  }
+
   // ── Loading ──
   if (busy && !profile) {
     return (
@@ -637,6 +712,103 @@ export default function StudentPage() {
               onCaptured={handleScanned}
               onCancel={() => { setStatus(''); setSelected(null); setView('home') }}
             />
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  // ── Check-in: PIN entry ──
+  if (view === 'checkin-pin') {
+    const goBack = () => { setStatus(''); setPinInput(''); setSelected(null); setView('home') }
+    return (
+      <div className="m-scan-page">
+        <div className="m-scroll">
+          <div className="m-scan-topbar">
+            <button className="m-back-btn" onClick={goBack}>‹</button>
+            <h3>รหัสคาบ · {selectedSession?.courses?.name}</h3>
+            <div style={{ width: 36 }} />
+          </div>
+
+          <div style={{ padding: '24px 20px', display: 'flex', flexDirection: 'column', gap: 20 }}>
+            {/* Info banner */}
+            <div style={{
+              background: 'color-mix(in srgb, var(--accent) 8%, #fff)',
+              border: '1.5px solid color-mix(in srgb, var(--accent) 22%, transparent)',
+              borderRadius: 16, padding: '14px 16px',
+              display: 'flex', gap: 12, alignItems: 'flex-start',
+            }}>
+              <span style={{ fontSize: 22, flexShrink: 0 }}>📺</span>
+              <div>
+                <p style={{ margin: '0 0 3px', fontFamily: '"Mitr",sans-serif', fontSize: 14, fontWeight: 600 }}>
+                  ดูรหัส 4 หลักจากจอในห้องเรียน
+                </p>
+                <p style={{ margin: 0, fontSize: 12, color: 'var(--soft)', lineHeight: 1.5 }}>
+                  อาจารย์จะแสดงรหัสบนจอโปรเจกเตอร์ พิมพ์รหัสด้านล่างเพื่อเช็คชื่อเข้าเรียน
+                </p>
+              </div>
+            </div>
+
+            {statusMsg && <div className="auth-error">{statusMsg}</div>}
+
+            {/* PIN input */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 16 }}>
+              <p style={{ margin: 0, fontSize: 13, color: 'var(--soft)', textAlign: 'center' }}>
+                พิมพ์รหัส 4 หลัก
+              </p>
+              <div style={{ display: 'flex', gap: 12 }}>
+                {[0, 1, 2, 3].map(i => (
+                  <div
+                    key={i}
+                    style={{
+                      width: 56, height: 64, borderRadius: 14,
+                      border: `2.5px solid ${pinInput.length === i ? 'var(--accent)' : pinInput.length > i ? 'var(--good)' : 'var(--line)'}`,
+                      display: 'grid', placeItems: 'center',
+                      background: pinInput.length > i ? 'color-mix(in srgb, var(--good) 8%, #fff)' : '#fff',
+                      fontFamily: 'monospace', fontSize: 28, fontWeight: 800,
+                      color: 'var(--ink)', transition: 'all 0.12s',
+                    }}
+                  >
+                    {pinInput[i] ?? ''}
+                  </div>
+                ))}
+              </div>
+              {/* Hidden real input behind the boxes */}
+              <input
+                type="tel"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={4}
+                value={pinInput}
+                autoFocus
+                onChange={e => { setStatus(''); setPinInput(e.target.value.replace(/\D/g, '').slice(0, 4)) }}
+                style={{
+                  position: 'absolute', opacity: 0, width: 1, height: 1, pointerEvents: 'none',
+                }}
+              />
+              <button
+                style={{
+                  background: 'none', border: '1px solid var(--line)', borderRadius: 10,
+                  padding: '8px 20px', cursor: 'pointer', fontSize: 13, color: 'var(--soft)',
+                }}
+                onClick={() => {
+                  const inp = document.querySelector('input[type="tel"]') as HTMLInputElement | null
+                  inp?.focus()
+                }}
+              >
+                แตะเพื่อพิมพ์รหัส
+              </button>
+            </div>
+
+            <button
+              className="m-btn m-btn-salmon"
+              disabled={pinInput.length !== 4 || busy}
+              style={{ opacity: pinInput.length !== 4 ? 0.5 : 1 }}
+              onClick={() => void handlePinCheckin()}
+            >
+              {busy ? 'กำลังตรวจสอบ...' : 'ยืนยันเช็คชื่อ'}
+            </button>
+            <button className="m-btn m-btn-white" onClick={goBack}>ยกเลิก</button>
           </div>
         </div>
       </div>
@@ -1171,16 +1343,30 @@ export default function StudentPage() {
                       </div>
                       {alreadyChecked ? (
                         <span className="label good">เช็คชื่อแล้ว ✓</span>
-                      ) : hasTemplate ? (
-                        <button
-                          className="m-btn m-btn-salmon m-btn-sm"
-                          style={{ width: 'auto', padding: '0 16px', minHeight: 36, flexShrink: 0 }}
-                          onClick={() => startCheckin(session)}
-                        >
-                          📷 เช็คชื่อ
-                        </button>
                       ) : (
-                        <span className="label muted" style={{ fontSize: 11 }}>บันทึกใบหน้าก่อน</span>
+                        <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+                          {hasTemplate && (
+                            <button
+                              className="m-btn m-btn-salmon m-btn-sm"
+                              style={{ width: 'auto', padding: '0 14px', minHeight: 36 }}
+                              onClick={() => startCheckin(session)}
+                            >
+                              📷 สแกนหน้า
+                            </button>
+                          )}
+                          <button
+                            className="m-btn m-btn-sm"
+                            style={{
+                              width: 'auto', padding: '0 14px', minHeight: 36,
+                              background: 'color-mix(in srgb, var(--accent) 10%, #fff)',
+                              color: 'var(--accent)', border: '1.5px solid color-mix(in srgb, var(--accent) 30%, transparent)',
+                              borderRadius: 12,
+                            }}
+                            onClick={() => { setSelected(session); setPinInput(''); setStatus(''); setView('checkin-pin') }}
+                          >
+                            🔢 รหัสคาบ
+                          </button>
+                        </div>
                       )}
                     </>
                   ) : (
