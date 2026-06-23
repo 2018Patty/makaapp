@@ -240,8 +240,13 @@ export default function AuthPage() {
         </div>
 
         {/* Footer */}
-        <p style={{ margin: '20px 0 0', fontSize: 11, color: 'var(--soft)', textAlign: 'center' }}>
+        <p style={{ margin: '20px 0 4px', fontSize: 11, color: 'var(--soft)', textAlign: 'center' }}>
           © 2026 Pattaraporn Warintarawej
+        </p>
+        <p style={{ margin: 0, textAlign: 'center' }}>
+          <Link href="/about" style={{ fontSize: 11, color: 'var(--accent)', textDecoration: 'none', opacity: 0.8 }}>
+            เกี่ยวกับ Maka App ›
+          </Link>
         </p>
       </div>
     </div>
