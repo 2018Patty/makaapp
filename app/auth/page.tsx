@@ -73,28 +73,21 @@ export default function AuthPage() {
     }
   }
 
-  const enterSignIn = async (role: RoleHint) => {
+  const enterSignIn = (role: RoleHint) => {
     setRole(role)
     setError('')
     setEmail('')
     setPass('')
-
-    if (supabase) {
-      setBusy(true)
-      try {
-        const { data } = await supabase.auth.getSession()
-        if (data.session?.user) {
-          await resolveAndRedirect(data.session.user.id)
-          return
-        }
-      } catch {
-        // network error — fall through to sign-in form
-      } finally {
-        setBusy(false)
-      }
-    }
-
     setView('sign-in')
+
+    // ถ้า login อยู่แล้ว — redirect เงียบๆ ใน background
+    if (supabase) {
+      supabase.auth.getSession()
+        .then(({ data }) => {
+          if (data.session?.user) resolveAndRedirect(data.session.user.id)
+        })
+        .catch(() => {})
+    }
   }
 
   if (!isSupabaseConfigured) {
