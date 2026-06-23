@@ -793,10 +793,10 @@ export default function TeacherPage() {
 
     const [openSessRes, allSessRes, enrollRes] = await Promise.all([
       // Open sessions only — used for courses tab open/close UI
-      supabase.from('sessions').select('id, status, starts_at, late_threshold_minutes, course_id')
+      supabase.from('sessions').select('id, status, starts_at, late_threshold_minutes, course_id, session_pin')
         .in('course_id', ids).eq('status', 'open'),
       // ALL sessions ordered by recency — pick most recent per course for report tab
-      supabase.from('sessions').select('id, status, starts_at, late_threshold_minutes, course_id')
+      supabase.from('sessions').select('id, status, starts_at, late_threshold_minutes, course_id, session_pin')
         .in('course_id', ids).order('starts_at', { ascending: false }),
       supabase.from('course_members').select('profile_id, course_id, profiles(full_name, student_id)')
         .in('course_id', ids),
