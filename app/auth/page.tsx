@@ -81,12 +81,17 @@ export default function AuthPage() {
 
     if (supabase) {
       setBusy(true)
-      const { data } = await supabase.auth.getSession()
-      if (data.session?.user) {
-        await resolveAndRedirect(data.session.user.id)
-        return
+      try {
+        const { data } = await supabase.auth.getSession()
+        if (data.session?.user) {
+          await resolveAndRedirect(data.session.user.id)
+          return
+        }
+      } catch {
+        // network error — fall through to sign-in form
+      } finally {
+        setBusy(false)
       }
-      setBusy(false)
     }
 
     setView('sign-in')
