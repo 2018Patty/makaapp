@@ -30,10 +30,7 @@ export default function RegisterStudentPage() {
       if (signUpErr) { setError(signUpErr.message); return }
 
       const user = data.user
-      if (!user) {
-        setInfo('สมัครเรียบร้อย กรุณาตรวจสอบอีเมลเพื่อยืนยันบัญชี')
-        return
-      }
+      if (!user) { setError('สมัครไม่สำเร็จ กรุณาลองใหม่อีกครั้ง'); return }
 
       await supabase.from('profiles').upsert({
         id:         user.id,
@@ -45,10 +42,6 @@ export default function RegisterStudentPage() {
         updated_at: new Date().toISOString(),
       })
 
-      if (!data.session) {
-        setInfo('สมัครเรียบร้อย กรุณาตรวจสอบอีเมลเพื่อยืนยันบัญชีแล้วเข้าสู่ระบบ')
-        return
-      }
       router.push('/student')
     } finally {
       setBusy(false)
