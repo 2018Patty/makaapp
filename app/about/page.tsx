@@ -90,24 +90,30 @@ export default function AboutPage() {
         {/* Screenshots */}
         <section style={{ marginBottom: 36 }}>
           <h2 style={{ fontSize: 20, margin: '0 0 14px', color: 'var(--ink)' }}>ตัวอย่างหน้าจอ</h2>
-          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1.5px solid var(--line)', marginBottom: 12 }}>
-            <Image
-              src="/DesktopMockUp.png"
-              alt="Maka Desktop"
-              width={1200}
-              height={750}
-              style={{ width: '100%', height: 'auto', display: 'block' }}
-            />
-          </div>
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <div style={{ borderRadius: 28, overflow: 'hidden', border: '1.5px solid var(--line)', maxWidth: 280 }}>
-              <Image
-                src="/MobileMockup.png"
-                alt="Maka Mobile"
-                width={560}
-                height={1120}
-                style={{ width: '100%', height: 'auto', display: 'block' }}
-              />
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'start' }}>
+            <div>
+              <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: 'var(--soft)', textTransform: 'uppercase', letterSpacing: 1 }}>Desktop</p>
+              <div style={{ borderRadius: 14, overflow: 'hidden', border: '1.5px solid var(--line)' }}>
+                <Image
+                  src="/DesktopMockUp.png"
+                  alt="Maka Desktop"
+                  width={1200}
+                  height={750}
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                />
+              </div>
+            </div>
+            <div>
+              <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: 'var(--soft)', textTransform: 'uppercase', letterSpacing: 1 }}>Mobile</p>
+              <div style={{ borderRadius: 20, overflow: 'hidden', border: '1.5px solid var(--line)', width: 140 }}>
+                <Image
+                  src="/MobileMockup.png"
+                  alt="Maka Mobile"
+                  width={560}
+                  height={1120}
+                  style={{ width: '100%', height: 'auto', display: 'block' }}
+                />
+              </div>
             </div>
           </div>
         </section>

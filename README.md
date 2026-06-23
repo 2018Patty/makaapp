@@ -8,11 +8,16 @@ Maka เป็นระบบบันทึกการเข้าเรีย
 
 ## 📸 ตัวอย่างหน้าจอ
 
-![Maka Desktop](public/DesktopMockUp.png)
-
-<p align="center">
-  <img src="public/MobileMockup.png" alt="Maka Mobile" width="300"/>
-</p>
+<table>
+  <tr>
+    <th align="center">Desktop</th>
+    <th align="center">Mobile</th>
+  </tr>
+  <tr>
+    <td><img src="public/DesktopMockUp.png" alt="Maka Desktop"/></td>
+    <td align="center"><img src="public/MobileMockup.png" alt="Maka Mobile" width="220"/></td>
+  </tr>
+</table>
 
 ---
 
