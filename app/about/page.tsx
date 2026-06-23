@@ -221,9 +221,9 @@ export default function AboutPage() {
               <Image
                 src="/qr-promptpay.png"
                 alt="PromptPay QR Code"
-                width={200}
-                height={200}
-                style={{ display: 'block' }}
+                width={260}
+                height={340}
+                style={{ display: 'block', width: 260, height: 'auto' }}
               />
             </div>
             <p style={{ margin: '0 0 4px', fontSize: 14, fontWeight: 700, color: 'var(--ink)' }}>
