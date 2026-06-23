@@ -1276,18 +1276,25 @@ export default function TeacherPage() {
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0, marginLeft: 10 }}>
                           <button
-                            title="อัปโหลดรายชื่อนักศึกษา"
+                            title="อัปโหลดรายชื่อนักศึกษา (.xlsx)"
                             onClick={e => { e.stopPropagation(); setUploadingCourse(course) }}
                             style={{
-                              width: 30, height: 30, borderRadius: 8, border: '1px solid var(--line)',
-                              background: '#fff', cursor: 'pointer', display: 'grid', placeItems: 'center',
-                              color: 'var(--soft)', fontSize: 14,
+                              width: 30, height: 30, borderRadius: 8, border: '1px solid #b7ddb0',
+                              background: '#f0faf0', cursor: 'pointer', display: 'grid', placeItems: 'center',
                             }}
                           >
-                            📋
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                              <rect x="3" y="2" width="18" height="20" rx="2" fill="#1d6f42"/>
+                              <line x1="3" y1="8" x2="21" y2="8" stroke="#fff" strokeWidth="1"/>
+                              <line x1="3" y1="13" x2="21" y2="13" stroke="#fff" strokeWidth="1"/>
+                              <line x1="3" y1="18" x2="21" y2="18" stroke="#fff" strokeWidth="1"/>
+                              <line x1="9" y1="8" x2="9" y2="22" stroke="#fff" strokeWidth="1"/>
+                              <line x1="15" y1="8" x2="15" y2="22" stroke="#fff" strokeWidth="1"/>
+                              <path d="M6.5 5L8 7l1.5-2" stroke="#fff" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+                            </svg>
                           </button>
                           <button
-                            title="แก้ไขรายวิชา"
+                            title="แก้ไขข้อมูลรายวิชา"
                             onClick={e => { e.stopPropagation(); setEditingCourse(course) }}
                             style={{
                               width: 30, height: 30, borderRadius: 8, border: '1px solid var(--line)',
@@ -1301,7 +1308,7 @@ export default function TeacherPage() {
                             </svg>
                           </button>
                           <button
-                            title="ล้างข้อมูลการเข้าเรียน"
+                            title="ล้างข้อมูลการเข้าเรียนทั้งหมดของวิชานี้"
                             onClick={e => { e.stopPropagation(); void resetCourse(course.id, course.name) }}
                             style={{
                               width: 30, height: 30, borderRadius: 8, border: '1px solid #fde8c0',
@@ -1315,7 +1322,7 @@ export default function TeacherPage() {
                             </svg>
                           </button>
                           <button
-                            title="ลบรายวิชา"
+                            title="ลบรายวิชานี้ออกจากระบบ"
                             onClick={e => { e.stopPropagation(); void deleteCourse(course.id, course.name) }}
                             style={{
                               width: 30, height: 30, borderRadius: 8, border: '1px solid #fcc',
