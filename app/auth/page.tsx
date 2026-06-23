@@ -121,7 +121,7 @@ export default function AuthPage() {
               <span style={{ fontFamily: '"Mitr",sans-serif', fontSize: 22, color: 'var(--ink)' }}>Maka</span>
             </div>
             <Image
-              src="/StudentLogin.png"
+              src={roleHint === 'teacher' ? '/TeacherLogin.png' : '/StudentLogin.png'}
               alt="Maka Login"
               width={600}
               height={400}
