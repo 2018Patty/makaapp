@@ -87,6 +87,31 @@ export default function AboutPage() {
 
       <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 20px 60px' }}>
 
+        {/* Screenshots */}
+        <section style={{ marginBottom: 36 }}>
+          <h2 style={{ fontSize: 20, margin: '0 0 14px', color: 'var(--ink)' }}>ตัวอย่างหน้าจอ</h2>
+          <div style={{ borderRadius: 16, overflow: 'hidden', border: '1.5px solid var(--line)', marginBottom: 12 }}>
+            <Image
+              src="/DesktopMockUp.png"
+              alt="Maka Desktop"
+              width={1200}
+              height={750}
+              style={{ width: '100%', height: 'auto', display: 'block' }}
+            />
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <div style={{ borderRadius: 28, overflow: 'hidden', border: '1.5px solid var(--line)', maxWidth: 280 }}>
+              <Image
+                src="/MobileMockup.png"
+                alt="Maka Mobile"
+                width={560}
+                height={1120}
+                style={{ width: '100%', height: 'auto', display: 'block' }}
+              />
+            </div>
+          </div>
+        </section>
+
         {/* About */}
         <section style={{ marginBottom: 36 }}>
           <h2 style={{ fontSize: 20, margin: '0 0 14px', color: 'var(--ink)' }}>เกี่ยวกับ Maka</h2>
@@ -187,7 +212,7 @@ export default function AboutPage() {
                 Pattaraporn Warintarawej
               </h3>
               <p style={{ margin: '0 0 2px', fontSize: 13, color: 'var(--soft)' }}>
-                ปัฏฐาภรณ์ วารินทราเวช
+                ภัทราพร วรินทรเวช
               </p>
               <a
                 href="mailto:pattaraporn.w@psu.ac.th"
@@ -196,7 +221,7 @@ export default function AboutPage() {
                 pattaraporn.w@psu.ac.th
               </a>
               <p style={{ margin: '6px 0 0', fontSize: 12, color: 'var(--soft)' }}>
-                มหาวิทยาลัยสงขลานครินทร์ (PSU)
+                มหาวิทยาลัยสงขลานครินทร์ วิทยาเขตสุราษฎร์ธานี (PSU Surat)
               </p>
             </div>
           </div>
