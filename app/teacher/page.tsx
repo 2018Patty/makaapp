@@ -993,7 +993,7 @@ export default function TeacherPage() {
     return (
       <div className="loading-shell">
         <div className="loading-card">
-          <div className="brand-mark" style={{ width: 52, height: 52, borderRadius: 18, fontSize: 22 }}>M</div>
+          <img src="/brand/maka-logo.svg" alt="Maka" width={52} height={52} style={{ display: 'block' }} />
           <div className="spinner" />
           <p>กำลังโหลดข้อมูล...</p>
         </div>
@@ -1900,7 +1900,7 @@ export default function TeacherPage() {
       {/* Bottom Nav */}
       <div className="m-bottom-nav">
         <Link href="/auth" className="m-nav-logo">
-          <div className="m-nav-logo-mark">M</div>
+          <img src="/brand/maka-logo.svg" alt="Maka" width={24} height={24} style={{ display: 'block' }} />
           <span className="m-nav-logo-text">Maka</span>
         </Link>
         <button className={`m-nav-item ${tab === 'courses' ? 'active' : ''}`} onClick={() => setTab('courses')}>

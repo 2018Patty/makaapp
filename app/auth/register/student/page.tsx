@@ -62,7 +62,7 @@ export default function RegisterStudentPage() {
       <div className="reg-panel">
         <Link href="/auth" className="reg-panel-back">← กลับหน้าหลัก</Link>
         <div className="reg-panel-brand">
-          <div className="brand-mark" style={{ width: 44, height: 44, borderRadius: 14, fontSize: 20 }}>M</div>
+          <img src="/brand/maka-logo.svg" alt="Maka" width={44} height={44} style={{ display: 'block', flexShrink: 0 }} />
           <span className="reg-panel-brandname">Maka</span>
         </div>
         <h2 className="reg-panel-title">ลงทะเบียน<br />นักศึกษา</h2>

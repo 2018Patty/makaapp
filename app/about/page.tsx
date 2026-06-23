@@ -55,11 +55,7 @@ const FEATURES = [
 
 export default function AboutPage() {
   return (
-    <div style={{
-      minHeight: '100dvh',
-      background: 'var(--bg)',
-      fontFamily: '"Mitr", sans-serif',
-    }}>
+    <div className="about-page">
 
       {/* Header */}
       <div style={{
@@ -68,14 +64,7 @@ export default function AboutPage() {
         textAlign: 'center',
         color: '#fff',
       }}>
-        <div style={{
-          width: 64, height: 64, borderRadius: 20, background: 'rgba(255,255,255,0.2)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 28, fontWeight: 900, margin: '0 auto 16px',
-          border: '2px solid rgba(255,255,255,0.4)',
-        }}>
-          M
-        </div>
+        <img src="/brand/maka-logo-mono.svg" alt="Maka" width={72} height={72} style={{ display: 'block', margin: '0 auto 16px' }} />
         <h1 style={{ margin: '0 0 6px', fontSize: 32, fontWeight: 700, letterSpacing: 1 }}>Maka</h1>
         <p style={{ margin: '0 0 10px', fontSize: 15, opacity: 0.9 }}>
           App เช็คชื่อเข้าเรียนด้วยใบหน้า
@@ -85,12 +74,12 @@ export default function AboutPage() {
         </p>
       </div>
 
-      <div style={{ maxWidth: 680, margin: '0 auto', padding: '32px 20px 60px' }}>
+      <div className="about-content">
 
         {/* Screenshots */}
         <section style={{ marginBottom: 36 }}>
           <h2 style={{ fontSize: 20, margin: '0 0 14px', color: 'var(--ink)' }}>ตัวอย่างหน้าจอ</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 12, alignItems: 'start' }}>
+          <div className="about-screenshots">
             <div>
               <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: 'var(--soft)', textTransform: 'uppercase', letterSpacing: 1 }}>Desktop</p>
               <div style={{ borderRadius: 14, overflow: 'hidden', border: '1.5px solid var(--line)' }}>
@@ -105,7 +94,7 @@ export default function AboutPage() {
             </div>
             <div>
               <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 700, color: 'var(--soft)', textTransform: 'uppercase', letterSpacing: 1 }}>Mobile</p>
-              <div style={{ borderRadius: 20, overflow: 'hidden', border: '1.5px solid var(--line)', width: 140 }}>
+              <div style={{ borderRadius: 20, overflow: 'hidden', border: '1.5px solid var(--line)' }}>
                 <Image
                   src="/MobileMockup.png"
                   alt="Maka Mobile"

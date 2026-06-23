@@ -630,7 +630,7 @@ export default function StudentPage() {
     return (
       <div className="loading-shell">
         <div className="loading-card">
-          <div className="brand-mark" style={{ width: 52, height: 52, borderRadius: 18, fontSize: 22 }}>M</div>
+          <img src="/brand/maka-logo.svg" alt="Maka" width={52} height={52} style={{ display: 'block' }} />
           <div className="spinner" />
           <p>กำลังโหลดข้อมูล...</p>
         </div>
@@ -647,7 +647,7 @@ export default function StudentPage() {
       <div className="stu-setup">
         <div className="stu-setup-head">
           <div className="stu-setup-brand">
-            <div className="brand-mark" style={{ width: 36, height: 36, borderRadius: 12, fontSize: 16 }}>M</div>
+            <img src="/brand/maka-logo.svg" alt="Maka" width={36} height={36} style={{ display: 'block', flexShrink: 0 }} />
             Maka
           </div>
           <div className="stu-step-badge">ขั้นตอนที่ 1 จาก 2</div>
@@ -668,7 +668,7 @@ export default function StudentPage() {
       <div className="stu-setup">
         <div className="stu-setup-head">
           <div className="stu-setup-brand">
-            <div className="brand-mark" style={{ width: 36, height: 36, borderRadius: 12, fontSize: 16 }}>M</div>
+            <img src="/brand/maka-logo.svg" alt="Maka" width={36} height={36} style={{ display: 'block', flexShrink: 0 }} />
             Maka
           </div>
           <div className="stu-step-badge">ขั้นตอนที่ 2 จาก 2</div>
@@ -1390,7 +1390,7 @@ function BottomNav({ tab, onTab }: { tab: NavTab; onTab: (t: NavTab) => void }) 
   return (
     <div className="m-bottom-nav">
       <Link href="/auth" className="m-nav-logo">
-        <div className="m-nav-logo-mark">M</div>
+        <img src="/brand/maka-logo.svg" alt="Maka" width={24} height={24} style={{ display: 'block' }} />
         <span className="m-nav-logo-text">Maka</span>
       </Link>
       <button className={`m-nav-item ${tab === 'home' ? 'active' : ''}`} onClick={() => onTab('home')}>

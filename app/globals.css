@@ -80,13 +80,8 @@ main {
 .brand-mark {
   width: 44px;
   height: 44px;
-  border-radius: 16px;
-  background: linear-gradient(145deg, var(--accent), var(--accent-2));
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-family: "Mitr", sans-serif;
-  font-weight: 700;
+  display: block;
+  flex-shrink: 0;
 }
 .brand-copy h1,
 .hero h2,
@@ -1639,14 +1634,8 @@ main {
 .m-nav-logo-mark {
   width: 24px;
   height: 24px;
-  border-radius: 8px;
-  background: linear-gradient(145deg, var(--accent), var(--accent-2));
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-family: 'Mitr', sans-serif;
-  font-weight: 700;
-  font-size: 12px;
+  display: block;
+  flex-shrink: 0;
 }
 .m-nav-logo-text {
   font-size: 11px;
@@ -2512,3 +2501,32 @@ main {
 }
 .avm-item:hover { background: var(--surface-soft); }
 .avm-danger { color: var(--accent-2); font-weight: 600; }
+
+/* ── About Page ───────────────────────────────────────────────── */
+.about-page {
+  min-height: 100dvh;
+  background: var(--bg);
+  font-family: "Mitr", sans-serif;
+  font-size: 16px;
+}
+.about-content {
+  width: min(1240px, calc(100% - 40px));
+  margin: 0 auto;
+  padding: 32px 0 60px;
+}
+.about-screenshots {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 560px) {
+  .about-screenshots {
+    grid-template-columns: 1fr 160px;
+    align-items: start;
+  }
+}
+@media (min-width: 900px) {
+  .about-screenshots {
+    grid-template-columns: 1fr 220px;
+  }
+}

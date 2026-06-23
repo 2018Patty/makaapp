@@ -130,7 +130,7 @@ export default function AuthPage() {
               />
             </div>
             <div className="m-brand-row" style={{ marginBottom: 4, justifyContent: 'center' }}>
-              <div className="brand-mark" style={{ width: 28, height: 28, borderRadius: 9, fontSize: 13 }}>M</div>
+              <img src="/brand/maka-logo.svg" alt="Maka" width={28} height={28} style={{ display: 'block', flexShrink: 0 }} />
               <span style={{ fontFamily: '"Mitr",sans-serif', fontSize: 19, color: 'var(--ink)' }}>Maka</span>
             </div>
             <p style={{ margin: '0 0 2px', fontFamily: '"Mitr",sans-serif', fontSize: 18, fontWeight: 700, color: 'var(--ink)' }}>
@@ -214,7 +214,7 @@ export default function AuthPage() {
       <div className="m-landing-content">
         {/* Brand */}
         <div className="m-brand-row">
-          <div className="brand-mark" style={{ width: 36, height: 36, borderRadius: 12, fontSize: 16 }}>M</div>
+          <img src="/brand/maka-logo.svg" alt="Maka" width={36} height={36} style={{ display: 'block', flexShrink: 0 }} />
           <h1>Maka</h1>
         </div>
         <p className="m-landing-quote">"มาค่ะ"</p>
