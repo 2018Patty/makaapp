@@ -650,13 +650,24 @@ export default function StudentPage() {
             <img src="/brand/maka-logo.svg" alt="Maka" width={36} height={36} style={{ display: 'block', flexShrink: 0 }} />
             Maka
           </div>
-          <div className="stu-step-badge">ขั้นตอนที่ 1 จาก 2</div>
           <h2>บันทึกใบหน้าของคุณ</h2>
           <p>ใบหน้าของคุณใช้เพื่อเช็คชื่อเข้าเรียน ระบบจัดเก็บเป็น face embedding เท่านั้น ไม่มีการเก็บรูปภาพจริง</p>
         </div>
         {statusMsg && <div className="auth-error" style={{ margin: '0 24px 12px' }}>{statusMsg}</div>}
         <div className="fc-page-content">
-          <FaceCamera mode="enroll" onCaptured={handleEnrolled} onCancel={() => router.push('/auth')} />
+          <FaceCamera mode="enroll" onCaptured={handleEnrolled} onCancel={() => setView('home')} />
+        </div>
+        <div style={{ textAlign: 'center', padding: '12px 24px 28px' }}>
+          <button
+            onClick={() => setView('home')}
+            style={{
+              background: 'none', border: 'none', cursor: 'pointer',
+              fontSize: 14, color: 'var(--soft)', textDecoration: 'underline',
+              fontFamily: '"Mitr",sans-serif',
+            }}
+          >
+            ข้ามขั้นตอนนี้ (ไม่มีกล้อง)
+          </button>
         </div>
       </div>
     )
